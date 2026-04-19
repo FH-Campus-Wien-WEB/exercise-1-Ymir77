@@ -1,14 +1,8 @@
-// Attribution test commit for GitHub user Ymir77
 const express = require('express')
 const path = require('path')
 const app = express()
-
-// Serve static content in directory 'files'
 app.use(express.static(path.join(__dirname, 'files')));
-
-// Configure a 'get' endpoint for data..
 app.get('/movies', function (req, res) {
-  // Part 1: Movie data
   const movies = [
     {
       Title: "The Thing",
@@ -52,8 +46,6 @@ app.get('/movies', function (req, res) {
   ]
   res.json(movies)
 })
-
 app.listen(3000)
-
 console.log("Server now listening on http://localhost:3000/")
 

@@ -52,27 +52,22 @@
             xhr.onload = function () {
                 const body = document.querySelector("body")
                 if (xhr.status == 200) {
-                    // Part 2: Parse JSON and render movies
                     const movies = JSON.parse(xhr.responseText)
                     
                     movies.forEach(movie => {
                         const article = document.createElement('article')
                         
-                        // Poster image
                         const img = document.createElement('img')
                         img.src = movie.Poster
                         img.alt = movie.Title
                         img.crossOrigin = 'anonymous'
                         
-                        // Title
                         const title = document.createElement('h1')
                         title.textContent = movie.Title
                         
-                        // Basic info
                         const info = document.createElement('p')
                         info.innerHTML = `<strong>Runtime:</strong> ${movie.Runtime} min | <strong>Released:</strong> ${new Date(movie.Released).toLocaleDateString()}`
                         
-                        // Genres
                         const genresDiv = document.createElement('p')
                         movie.Genres.forEach(g => {
                             const span = document.createElement('span')
@@ -81,7 +76,6 @@
                             genresDiv.appendChild(span)
                         })
                         
-                        // Directors, Writers, Actors
                         const details = document.createElement('p')
                         details.innerHTML = `
                             <strong>Director:</strong> ${movie.Directors.join(', ')}<br>
@@ -90,12 +84,10 @@
                             <strong>Ratings:</strong> IMDb ${movie.imdbRating}/10 | Metascore ${movie.Metascore}
                         `
                         
-                        // Plot
                         const plot = document.createElement('p')
                         plot.className = 'plot'
                         plot.textContent = movie.Plot
                         
-                        // Assemble article
                         article.appendChild(img)
                         article.appendChild(title)
                         article.appendChild(info)
