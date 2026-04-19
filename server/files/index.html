@@ -4,24 +4,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
     <title>Movies!</title>
     <style>
-        /* Part 3: Your styling goes here */
+        body {
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        article {
+            background-color: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        img {
+            border-radius: 6px;
+            max-width: 200px;
+            margin-right: 20px;
+            float: left;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+        }
+        .genre {
+            background-color: #007bff;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-right: 8px;
+            margin-bottom: 5px;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+        .plot {
+            clear: both;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
     </style>
     <script>
-        function reverseString(s) {
-            return s.split("").reverse().join("");
-        }
-
         window.onload = function () {
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
+                const body = document.querySelector("body")
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+                    // Part 2: Parse JSON and render movies
+                    const movies = JSON.parse(xhr.responseText)
+                    
+                    movies.forEach(movie => {
+                        const article = document.createElement('article')
+                        
+                        // Poster image
+                        const img = document.createElement('img')
+                        img.src = movie.Poster
+                        img.alt = movie.Title
+                        img.crossOrigin = 'anonymous'
+                        
+                        // Title
+                        const title = document.createElement('h1')
+                        title.textContent = movie.Title
+                        
+                        // Basic info
+                        const info = document.createElement('p')
+                        info.innerHTML = `<strong>Runtime:</strong> ${movie.Runtime} min | <strong>Released:</strong> ${new Date(movie.Released).toLocaleDateString()}`
+                        
+                        // Genres
+                        const genresDiv = document.createElement('p')
+                        movie.Genres.forEach(g => {
+                            const span = document.createElement('span')
+                            span.className = 'genre'
+                            span.textContent = g
+                            genresDiv.appendChild(span)
+                        })
+                        
+                        // Directors, Writers, Actors
+                        const details = document.createElement('p')
+                        details.innerHTML = `
+                            <strong>Director:</strong> ${movie.Directors.join(', ')}<br>
+                            <strong>Writer:</strong> ${movie.Writers.join(', ')}<br>
+                            <strong>Actors:</strong> ${movie.Actors.join(', ')}<br>
+                            <strong>Ratings:</strong> IMDb ${movie.imdbRating}/10 | Metascore ${movie.Metascore}
+                        `
+                        
+                        // Plot
+                        const plot = document.createElement('p')
+                        plot.className = 'plot'
+                        plot.textContent = movie.Plot
+                        
+                        // Assemble article
+                        article.appendChild(img)
+                        article.appendChild(title)
+                        article.appendChild(info)
+                        article.appendChild(genresDiv)
+                        article.appendChild(details)
+                        article.appendChild(plot)
+                        
+                        body.appendChild(article)
+                    })
                 } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+                    body.append("Error loading movies. Status " + xhr.status)
                 }
             }
             xhr.open("GET", "/movies")
